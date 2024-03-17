@@ -1,0 +1,23 @@
+CREATE DATABASE login_db;
+
+use login_db;
+
+
+
+use login_db;
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+
+
+use login_db;
+INSERT INTO users (username, password) VALUES 
+('nawaras', 'nawaraspw'),
+ ('root', 'rootpw');
+
+
+use login_db;
+ select * from users;
