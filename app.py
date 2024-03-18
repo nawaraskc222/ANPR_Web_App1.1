@@ -97,11 +97,10 @@ def insert():
         checkout = request.form['checkout']
 
          # Calculate hours parked
-        hours_parked = calculate_hours_parked(checkin, checkout)
+        cost_str = calculate_hours_parked(checkin, checkout)
 
-    # Calculate cost
-        cost = hours_parked * 10
-        cost_str = "${:.2f}".format(cost)
+         # Convert check-in and check-out times to datetime objects
+        
 
         
         upload_file = request.files['photo']
@@ -124,19 +123,18 @@ def insert():
 
 def calculate_hours_parked(checkin, checkout):
     
-    checkin_time = datetime.fromisoformat(checkin)
-    checkout_time = datetime.fromisoformat(checkout)
+    checkin_time = datetime.strptime(checkin, '%Y-%m-%dT%H:%M')
+    checkout_time = datetime.strptime(checkout, '%Y-%m-%dT%H:%M')
 
-    intime=checkin_time.hour
-    outtime=checkout_time.hour
+    # Calculate the time difference in hours
+    time_diff = (checkout_time - checkin_time).total_seconds() / 3600
 
-    
-
-    hours =intime-outtime
+    # Calculate the total cost
+    total_cost = time_diff * 10
 
    
 
-    return hours 
+    return total_cost 
 
 # Delete route
 @app.route('/delete/<string:id_data>', methods=['GET'])
