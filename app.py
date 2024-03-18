@@ -15,6 +15,7 @@ from email.mime.multipart import MIMEMultipart
 from flask_mysqldb import MySQL
 import os
 from deeplearning import OCR
+from datetime import datetime
 
 
 
@@ -91,6 +92,16 @@ def insert():
         email = request.form['email']
         phone = request.form['phone']
         # photo = request.form['photo']
+          # # see 2
+        checkin = request.form['checkin']
+        checkout = request.form['checkout']
+
+         # Calculate hours parked
+        hours_parked = calculate_hours_parked(checkin, checkout)
+
+    # Calculate cost
+        cost = hours_parked * 10
+        cost_str = "${:.2f}".format(cost)
 
         
         upload_file = request.files['photo']
@@ -101,10 +112,31 @@ def insert():
 
 
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO students (name, email, phone,photo) VALUES (%s, %s, %s,%s)", (name, email, phone, photo))
+
+        # cur.execute("INSERT INTO students (name, email, phone,photo) VALUES (%s, %s, %s,%s)", (name, email, phone, photo))
+
+        cur.execute("INSERT INTO students (name, email, phone,photo,cost_str) VALUES (%s, %s, %s,%s,%s)", (name, email, phone,photo,cost_str))
+        
         mysql.connection.commit()
         return redirect(url_for('Index'))
 
+
+
+def calculate_hours_parked(checkin, checkout):
+    
+    checkin_time = datetime.fromisoformat(checkin)
+    checkout_time = datetime.fromisoformat(checkout)
+
+    intime=checkin_time.hour
+    outtime=checkout_time.hour
+
+    
+
+    hours =intime-outtime
+
+   
+
+    return hours 
 
 # Delete route
 @app.route('/delete/<string:id_data>', methods=['GET'])
